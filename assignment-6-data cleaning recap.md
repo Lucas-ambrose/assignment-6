@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning Recap: Do it Yourself"
-author: Lucas Ambrose 
+author: "Lucas Ambrose""
 output: html_document
 ---
 
@@ -17,3 +17,16 @@ During the 1870 census data on people's occupation was collected. The data [occu
 -   Separate the `occupation.gender` type variable into two variables.
 
 -   "Spread" (use `pivot_wider`) the data such that you can draw scatterplots of values for men against women facetted by occupation.
+
+```{r}
+library(tidyr)
+library(dbplyr)
+library(stringr)
+library(ggplot2)
+occupation <- read.csv("occupation-1870.csv")
+occupation_long <- occupation %>%
+  pivot_longer(-c("Area.name", "Total.Population"), names_to = "Occupation", values_to = "Measurement") %>%
+  separate_wider_delim(Occupation, delim = ".", names = c("Occupation","Gender")) %>%
+  pivot_wider(names_from = "Gender", values_from = "Measurement")
+head(occupation_long, 10)
+```
